@@ -1,7 +1,8 @@
 Run the in-built php server with this 
 
 ```
-php -S localhost:8000 -t public 
+php -S localhost:8000 -t public/index.php
+mysql -u root -p --protocol=TCP
 ```
 
 The SQL create table statements.
