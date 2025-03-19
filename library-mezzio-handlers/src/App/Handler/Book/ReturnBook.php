@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Handler\Book;
 
 use App\Entity\Book;
+use App\Entity\BorrowedBook;
 use App\Entity\Borrowing;
 use App\Entity\User;
 use DateTime;
@@ -26,7 +27,7 @@ class ReturnBook implements RequestHandlerInterface
     {
         $user = $request->getAttribute(User::class);
         $book = $request->getAttribute(Book::class);
-        $borrowedBook = $request->getAttribute(Borrowing::class);
+        $borrowedBook = $request->getAttribute(BorrowedBook::class);
 
         $returnDate = new DateTime();
 

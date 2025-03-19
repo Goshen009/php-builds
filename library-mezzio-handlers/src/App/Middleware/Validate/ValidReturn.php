@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Middleware\Validate;
 
 use App\Entity\Book;
-use App\Entity\Borrowing;
+use App\Entity\BorrowedBook;
 use App\Entity\User;
 use Assert\Assertion;
 use Assert\InvalidArgumentException;
@@ -30,7 +30,7 @@ class ValidReturn implements MiddlewareInterface
         $user = $request->getAttribute(User::class);
         $book = $request->getAttribute(Book::class);
 
-        $borrowedBook = $this->entityManager->getRepository(Borrowing::class)->findOneBy([
+        $borrowedBook = $this->entityManager->getRepository(BorrowedBook::class)->findOneBy([
             'user' => $user,
             'book' => $book,
             'returnDate' => null
@@ -41,7 +41,7 @@ class ValidReturn implements MiddlewareInterface
 
             Assertion::notNull($borrowedBook, 'you are trying to return a book you never borrowed');
 
-            $request = $request->withAttribute(Borrowing::class, $borrowedBook);
+            $request = $request->withAttribute(BorrowedBook::class, $borrowedBook);
             return $handler->handle($request);
 
         } catch (InvalidArgumentException $e) {

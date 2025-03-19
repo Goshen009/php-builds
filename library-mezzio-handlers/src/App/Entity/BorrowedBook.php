@@ -23,11 +23,11 @@ class BorrowedBook {
     private ?int $fine = null;
 
     public function __construct(
-        #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "borrowings")]
+        #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "borrowedBook")]
         #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false, onDelete: "CASCADE")]
         private User $user,
 
-        #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: "borrowings")]
+        #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: "borrowedBook")]
         #[ORM\JoinColumn(name: "book_id", referencedColumnName: "id", nullable:false, onDelete: "CASCADE")]
         private Book $book,
 
@@ -40,8 +40,12 @@ class BorrowedBook {
         
     }
 
-    public function getBook(): Book { return $this->book; }
-    public function getDueDate(): DateTime { return $this->dueDate; }
+    public function getBook(): Book {
+        return $this->book;
+    }
+    public function getDueDate(): DateTime {
+        return $this->dueDate;
+    }
 
     public static function borrowBook(
         User $user,

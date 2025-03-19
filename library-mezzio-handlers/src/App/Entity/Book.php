@@ -46,7 +46,7 @@ class Book {
         private int $availableCopies,
 
         #[ORM\OneToMany(targetEntity: BorrowedBook::class, mappedBy: 'book', cascade: ["persist", "remove"])]    
-        private Collection $borrowings = new ArrayCollection()
+        private Collection $borrowedBook = new ArrayCollection()
     ) {
       
     }
