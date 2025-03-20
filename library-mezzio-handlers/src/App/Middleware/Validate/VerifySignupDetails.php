@@ -24,27 +24,34 @@ class VerifySignupDetails implements MiddlewareInterface
     ) {
 
     }
+    
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $data = $request->getParsedBody();
 
         try {
-            // Validate Username
+            // Username
             Assertion::notEmptyKey($data, 'username', 'username is required');
             Assert::that($data['username'])
                 ->regex('/^[a-zA-Z\d\s]+$/', 'username must be alphanumeric only')
                 ->minLength(3, 'username must be at least 3 characters')
                 ->maxLength(50, 'username must not be more than 50 characters');
-            CustomAssertion::isUnique($data['username'], $this->entityManager, User::class, 'username', 'username already exists');
 
-            // Validate Email
+            // Email
             Assertion::notEmptyKey($data, 'email', 'email is required');
             Assertion::email($data['email'], 'this is not a valid email address');
-            CustomAssertion::isUnique($data['email'], $this->entityManager, User::class, 'email', 'email already exists');
-            
-            // Validate Password
+            $existingEmail = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+            Assertion::null($existingEmail, 'email already exists');
+
+            // Password
             Assertion::notEmptyKey($data, 'password', 'password is required');
-            CustomAssertion::validPassword($data['password']);
+            Assert::that($data['password'])
+                ->minLength(8, 'Password must be at least 8 characters long.')
+                ->maxLength(64, 'Password must not exceed 64 characters.')
+                ->regex('/[A-Z]/', 'Password must contain at least one uppercase letter.')
+                ->regex('/[a-z]/', 'Password must contain at least one lowercase letter.')
+                ->regex('/[\W]/', 'Password must contain at least one special character.')
+                ->regex('/\d/', 'Password must contain at least one number.');
 
             $passwordHash = password_hash($data['password'], PASSWORD_BCRYPT);
 

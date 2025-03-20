@@ -33,19 +33,23 @@ class VerifyLoginDetails implements MiddlewareInterface
         $data = $request->getParsedBody();
 
         try {
-            // Validating Username
-            Assertion::notEmptyKey($data, 'username', 'username is required');
-            Assertion::regex($data['username'], '/^[a-zA-Z\d\s]+$/', 'This is an invalid username');
-            CustomAssertion::existsInDatabase($data['username'], $this->entityManager, User::class, 'username', "This username does not exist");
+            // Validating Email
+            Assertion::notEmptyKey($data, 'email', 'email is required');
+            Assertion::email($data['email'], 'this is not a valid email address');
 
             // Validating Password
             Assertion::notEmptyKey($data, 'password', 'password is required');
             
             /** @var User */
-            $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $data['username']]);
+            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+            Assertion::notNull($user, 'this user does not exist');
+
+            if ($user->getPasswordHash() == '') {
+                return new JsonResponse("Login in with Google instead");
+            }
 
             if (!password_verify($data['password'], $user->getPasswordHash())) {
-                throw new RuntimeException('incorrect username or password');
+                throw new RuntimeException('incorrect email or password');
             }
 
             if (!$user->isVerified()) {

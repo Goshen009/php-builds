@@ -16,5 +16,11 @@ return [
         'expiryPeriod' => 'P50D',
         'leeway' => 60,
         'alg' => 'HS256',
+    ],
+
+    'googleOAuth' => [
+        'clientId' => $_ENV['GOOGLE_CLIENT_ID'],
+        'clientSecret' => $_ENV['GOOGLE_CLIENT_SECRET'],
+        'redirectURI' => 'http://localhost:8080/google/callback'
     ]
 ];

@@ -38,6 +38,7 @@ class ConfigProvider
                 \App\Services\JWT::class => \App\Services\JWTFactory::class,
                 \Doctrine\ORM\EntityManager::class => \App\Factories\EntityManagerFactory::class,
                 \App\Services\CloudinaryService::class => \App\Services\CloudinaryServiceFactory::class,
+                \App\Services\GoogleOAuthService::class => \App\Services\GoogleOAuthServiceFactory::class,
             ],
         ];
     }

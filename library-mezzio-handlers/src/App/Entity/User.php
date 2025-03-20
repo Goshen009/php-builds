@@ -22,14 +22,14 @@ class User {
     private ?string $imageUrl = null;
 
     public function __construct(
-        #[ORM\Column(type: 'string', length: 50, unique: true)]
+        #[ORM\Column(type: 'string', length: 50)]
         private string $username,
 
         #[ORM\Column(type: "string", length: 255, unique: true)]
         private string $email,
 
         #[ORM\Column(type: "string", length: 60)]
-        private string $passwordHash,
+        private string $passwordHash = "",
 
         #[ORM\Column(type: 'string')]
         private string $role = UserRole::Regular->value,
@@ -80,6 +80,17 @@ class User {
             $username,
             $email,
             $passwordHash
+        );
+    }
+
+    public static function signUpWithGoogle(
+        string $username,
+        string $email,
+    ): self {
+        return new static (
+            $username,
+            $email,
+            verified: true
         );
     }
 

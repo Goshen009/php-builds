@@ -24,6 +24,13 @@ use App\Handler\User\Register\VerifyVerificationCode;
 use App\Handler\User\UpdateProfile;
 use App\Handler\User\UploadProfileImage;
 use App\Middleware\Auth\AdminOnly;
+use App\Middleware\Auth\GoogleCallback;
+use App\Middleware\Auth\GoogleLogin;
+use App\Middleware\Auth\GoogleOAuth\CallGoogleOAuthAPI;
+use App\Middleware\Auth\GoogleOAuth\GoogleOAuthCallback;
+use App\Middleware\Auth\GoogleOAuth\GoogleOAuthUserVerification;
+use App\Middleware\Auth\GoogleOAuth\LoginWithGoogle;
+use App\Middleware\Auth\GoogleOAuth\RegisterWithGoogle;
 use App\Middleware\Auth\ValidateJWT;
 use App\Middleware\Fetch\FetchBook;
 use App\Middleware\Fetch\FetchUserFromRouteParam;
@@ -80,10 +87,27 @@ return static function (Application $app, MiddlewareFactory $factory, ContainerI
         CompleteSignup::class
     ], 'user.verify-email');
 
+
+    $app->get('/users/signup/google', [
+        CallGoogleOAuthAPI::class
+    ], 'user.signup.google-oauth');
+
+    $app->get('/google/callback', [
+        GoogleOAuthCallback::class,
+        GoogleOAuthUserVerification::class,
+        Login::class
+    ], 'user.google-oauth.callback');
+
+    $app->get('/users/register/google', [
+        RegisterWithGoogle::class,
+        Login::class
+    ], 'user.google.register');
+
+
     $app->post('/users/login', [
         VerifyLoginDetails::class,
         Login::class
-    ], 'user.login'); 
+    ], 'user.login');
 
     $app->patch('/users/update', [
         ValidateJWT::class,
